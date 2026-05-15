@@ -74,8 +74,15 @@ public class Contact : IEquatable<Contact>
 
     public static bool operator ==(Contact? x, Contact? y)
     {
-        return !(x==y); 
+        if (x is null) return y is null;
+        return x.Equals(y);
     }
+
+    public static bool operator !=(Contact? x, Contact? y)
+    {
+        return !(x == y);
+    }
+
     public override int GetHashCode()
     {
         return HashCode.Combine(fname, lname, phone, email);
