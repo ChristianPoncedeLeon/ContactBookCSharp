@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+
 namespace ContactBook;
 
 public class ContactBook
@@ -49,10 +51,12 @@ public void Start()
         string input;
         do
         {
-            ShowContacts();
+            
 
             do
             {
+                Console.Clear();
+                ShowContacts();
                 ShowInputOptions();
                 input = GetInput();
             }
@@ -131,12 +135,22 @@ public void Start()
 
     private string GetInput()
     {
-        return Console.ReadLine()?.Trim().ToUpper() ?? "";
+        return Console.ReadLine()!.ToUpper();
     }
 
     private bool isValidInput(string input)
     {
-        return Array.Exists(COMMANDS, c => c == input);
+        if (!COMMANDS.Contains(input))
+        {
+            Console.WriteLine("ERROR: Invalid input. Please try again");
+            PressEnterContinue();
+            return false;
+
+        }
+        else
+        {
+            return true;
+        }
     }
 
     private void ProcessInput(string input)
