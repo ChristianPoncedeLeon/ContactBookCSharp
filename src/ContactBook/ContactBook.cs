@@ -1,6 +1,6 @@
 namespace ContactBook;
 
-public class ContactBook()
+public class ContactBook
 {
 public const string NEXT_PAGE = "+";
 public const string PREV_PAGE = "-";
@@ -31,10 +31,20 @@ ORDER_CONTACT,
 DEDUPLICATE_CONTACT,
 EXIT   
 };
+
+private List<Contact> allContacts;
+
+
+public ContactBook(List<Contact> contacts = null)
+    {
+        allContacts = (contacts == null) ? new List<Contact>(): contacts;
+
+    }
 public void Start()
     {
         
         ShowWelcomeScreen();
+
         string input;
         do
         {
@@ -56,14 +66,27 @@ public void Start()
 
     private void ShowWelcomeScreen()
     {
-        Console.WriteLine("Welcome to Bruckman's Contact Book!");
+        Console.WriteLine("Welcome to Christian's Contact Book!");
         PressEnterContinue();
     }
 
     private void ShowContacts()
     {
-        
+        if(allContacts.Count <= 0){ 
+
+        Console.WriteLine("No contacts found.");
     }
+        else
+        {
+
+            for (int i = 0; i < allContacts.Count;i++){
+
+                Console.WriteLine($"{i} {allContacts[i]}");
+            }
+        }
+    }
+        
+        
 
     private void ShowInputOptions()
     {
