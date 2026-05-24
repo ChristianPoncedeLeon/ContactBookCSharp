@@ -63,6 +63,7 @@ public void Start()
             while(!isValidInput(input));
 
             ProcessInput(input);
+            PressEnterContinue();
         }
         while(!ConfirmExit());
 
@@ -155,8 +156,23 @@ public void Start()
 
     private void ProcessInput(string input)
     {
-        if (input == EXIT)
-            _shouldExit = true;
+        switch(input)
+        {
+    case NEXT_PAGE: NextPage(); break;
+    case PREV_PAGE: PrePage(); break;
+    case GOTO_PAGE: GotoPage(); break;
+    case PAGE_SIZE: PageSize(); break;
+    case CREATE_CONTACT: CreateContact(); break;
+    case REVIEW_CONTACT: ReviewContact(); break;
+    case UPDATE_CONTACT: UpdateContact(); break;
+    case DELETE_CONTACT: DeleteContact(); break;
+    case FIND_CONTACT: FindContact(); break;
+    case ORDER_CONTACT: OrderContact(); break;
+    case DEDUPLICATE_CONTACT: DeduplicateContact(); break;
+    case EXIT: Exit(); break;
+    default: break;
+
+        }
     }
 
     private bool ConfirmExit()
@@ -173,5 +189,65 @@ public void Start()
     {
         Console.Write("Press Enter to continue.");
         Console.ReadLine();
+    }
+
+    private void NextPage()
+    {
+        Console.WriteLine("Next Page");
+    }
+
+    private void PrePage()
+    {
+        Console.WriteLine("Prev Page");
+    }
+
+    private void GotoPage()
+    {
+     Console.WriteLine("Goto Page");   
+    }
+
+    private void PageSize()
+    {
+       Console.WriteLine("Page Size");
+    }
+
+    private void CreateContact()
+    {
+       Console.WriteLine("Create Contact");
+    }
+
+    private void ReviewContact()
+    {
+        Console.WriteLine("Review Contact");
+    }
+
+    private void UpdateContact()
+    {
+       Console.WriteLine("Update Contact");
+    }
+
+    private void DeleteContact()
+    {
+        Console.WriteLine("Delete Contact");
+    }
+
+    private void FindContact()
+    {
+        Console.WriteLine("Find Contact");
+    }
+
+    private void OrderContact()
+    {
+     Console.WriteLine("Order Contact");
+    }
+
+    private void DeduplicateContact()
+    {
+      Console.WriteLine("Deduplicate Contact");
+    }
+
+    private void Exit()
+    {
+        Console.WriteLine("Exit");
     }
 }
