@@ -189,8 +189,9 @@ public void Start()
 
     private void showExitScreen()
     {
-        Console.WriteLine("Goodbye!");
-        PressEnterContinue();
+        Console.Clear();
+        Console.WriteLine("Thank you for using Christian's Contact Book!");
+        
     }
     private void PressEnterContinue()
     {
