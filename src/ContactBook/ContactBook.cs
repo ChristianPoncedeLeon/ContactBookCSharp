@@ -42,12 +42,18 @@ EXIT
 };
 
 private List<Contact> allContacts;
+private int page;
+private int size;
 private bool _shouldExit = false;
+private bool isExit;
 
 
 public ContactBook(List<Contact> contacts = null)
     {
         allContacts = (contacts == null) ? new List<Contact>(): contacts;
+        page = 1;
+        size = 10;
+        isExit = false;
 
     }
 public void Start()
@@ -70,7 +76,6 @@ public void Start()
             while(!isValidInput(input));
 
             ProcessInput(input);
-            PressEnterContinue();
         }
         while(!ConfirmExit());
 
@@ -84,6 +89,10 @@ public void Start()
     }
 
     private void ShowContacts()
+    {
+        ShowContacts(allContacts, page, size);
+    }
+    private void ShowContacts(List<Contact> contacts, int page, int size)
     {
         if(allContacts.Count <= 0){ 
 
@@ -108,10 +117,8 @@ public void Start()
 
             Console.WriteLine(new string('─', indexCol+2+fnameCol+2+lnameCol+2+phoneCol+2+emailCol));
 
-            int n = allContacts.Count;
-            int page =1;
-            int size = 10;
-            int pageCount = (int)Math.Max(1, Math.Ceiling(n/ (double) size));
+            int n = contacts.Count;
+            int pageCount = PageCount(contacts, size);
             int s =Math.Clamp((page - 1) *size,0,n);
             int e =Math.Clamp(s + size, 0, n);
             for (int i = s; i < e; i++){
@@ -124,6 +131,10 @@ public void Start()
                 + "{3, " + -phoneCol + "} "
                 + "{4, " + -emailCol + "} ",
                 (i + 1), c.getFname(), c.getLname(), c.getPhone(), c.getEmail());
+            }
+            for(int i = 0; i < size - e + s; i++)
+            {
+                Console.WriteLine();
             }
 
             Console.WriteLine();
@@ -151,7 +162,6 @@ public void Start()
         if (!COMMANDS.Contains(input))
         {
             Console.WriteLine("ERROR: Invalid input. Please try again");
-            PressEnterContinue();
             return false;
 
         }
@@ -166,7 +176,7 @@ public void Start()
         switch(input)
         {
     case NEXT_PAGE: NextPage(); break;
-    case PREV_PAGE: PrePage(); break;
+    case PREV_PAGE: PrevPage(); break;
     case GOTO_PAGE: GotoPage(); break;
     case PAGE_SIZE: PageSize(); break;
     case CREATE_CONTACT: CreateContact(); break;
@@ -184,7 +194,7 @@ public void Start()
 
     private bool ConfirmExit()
     {
-        return Confirm("Do you want to exit?",NO);
+        return (isExit) ? Confirm("Do you want to exit?",NO) : false;
     }
 
     private void showExitScreen()
@@ -201,12 +211,22 @@ public void Start()
 
     private void NextPage()
     {
-        Console.WriteLine("Next Page");
+        NextPage(allContacts,ref page, size);
+        
     }
 
-    private void PrePage()
+    private void NextPage(List<Contact> contacts,ref int page, int size)
     {
-        Console.WriteLine("Prev Page");
+        page = Math.Clamp(page + 1, 1, PageCount(contacts, size));
+    }
+
+   private void PrevPage()
+    {
+        PrevPage(allContacts,ref page, size);
+    }
+    private void PrevPage(List<Contact> contacts,ref int page, int size)
+    {
+        page = Math.Clamp(page - 1, 1, PageCount(contacts, size));
     }
 
     private void GotoPage()
@@ -256,10 +276,10 @@ public void Start()
 
     private void Exit()
     {
-        Console.WriteLine("Exit");
+        isExit = true;
     }
 
-    private string GetOptions(string prompt, string[] validOptions, string defaultOption)
+    private string GetOption(string prompt, string[] validOptions, string defaultOption)
     {
         string options = string.Join('/', validOptions);
         Console.Write(prompt + $"[{options}]({defaultOption}) ");
@@ -283,7 +303,12 @@ public void Start()
 
     private bool Confirm(string prompt, string defaultOption)
     {
-        return GetOptions(prompt, YES_NO, defaultOption) == YES;
+        return GetOption(prompt, YES_NO, defaultOption) == YES;
+
+    }
+    private static int PageCount(List <Contact> contacts,int size)
+    {
+        return(int) Math.Max(1, Math.Ceiling(contacts.Count/(double) size));
 
     }
 }
