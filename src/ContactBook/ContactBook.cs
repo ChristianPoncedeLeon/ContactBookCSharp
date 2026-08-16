@@ -278,11 +278,33 @@ public void Start()
             Console.WriteLine("Operation cancelled: Contact not created");
         
         }
+        PressEnterContinue();
     }
 
-    private void ReviewContact()
+    private void ReviewContact(){ 
+ 
+    int index = GetInt("Enter index", 1, allContacts.Count) - 1;
+
+    Console.Clear();
+    ReviewContact(index);
+    PressEnterContinue();
+    }
+    private void ReviewContact(int index)
     {
-        Console.WriteLine("Review Contact");
+        Contact c = allContacts[index];
+        
+       Console.WriteLine(new string ('#', 80));
+       Console.WriteLine("Review Contact ");
+       Console.WriteLine(new string ('#', 80));
+       Console.WriteLine();
+    
+       Console.WriteLine($"First Name: {c.getFname()}");
+       Console.WriteLine($" Last Name: {c.getLname()}");
+       Console.WriteLine($"     Phone: {c.getPhone()}");
+       Console.WriteLine($"     Email: {c.getEmail()}");
+
+       Console.WriteLine();
+       
     }
 
     private void UpdateContact()
