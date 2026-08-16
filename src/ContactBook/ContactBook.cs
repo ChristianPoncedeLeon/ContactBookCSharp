@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 
 namespace ContactBook;
@@ -228,10 +229,13 @@ public void Start()
     {
         page = Math.Clamp(page - 1, 1, PageCount(contacts, size));
     }
-
-    private void GotoPage()
+    
+    private void GotoPage(){
+    GotoPage (allContacts, ref page, size);
+    }
+    private void GotoPage(List<Contact> contacts, ref int page, int size)
     {
-     Console.WriteLine("Goto Page");   
+     page = GetInt("Enter page", 1, PageCount(contacts, size));
     }
 
     private void PageSize()
@@ -279,6 +283,24 @@ public void Start()
         isExit = true;
     }
 
+    private int GetInt(string prompt, int min, int max)
+    {
+         string options = $"[{min}-{max}]";
+
+        Console.Write(prompt + $"[{options}] ");
+        string answer = Console.ReadLine()!;
+        
+        int value;
+        while (!int.TryParse(answer, out value) || value < min || value > max)
+        {
+            Console.WriteLine("Error: Invalid option. Please try again.");
+            Console.Write(prompt + $"[{options}] ");
+            answer = Console.ReadLine()!;
+        }
+
+        return value;
+        
+    }
     private string GetOption(string prompt, string[] validOptions, string defaultOption)
     {
         string options = string.Join('/', validOptions);
