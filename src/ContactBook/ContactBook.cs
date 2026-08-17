@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 using System.Security.Cryptography;
 
 namespace ContactBook;
-
+using static ContactComparer;
 public class ContactBook
 {
 
@@ -449,7 +449,16 @@ Console.WriteLine();
 
     private void OrderContact()
     {
-     Console.WriteLine("Order Contact");
+     SortType[] sortTypes = new SortType[]
+     {
+         SortType.FName, SortType.LName, SortType.Phone, SortType.Email
+     };
+
+    int index = GetInt("Sort contacts by [0] First Name [1] Last Name [2] Phone [3] Email",0,3);
+
+    ContactComparer ccp = new ContactComparer(sortTypes[index]);
+    allContacts.Sort(ccp);
+    filteredContacts.Sort(ccp);
     }
 
     private void DeduplicateContact()
