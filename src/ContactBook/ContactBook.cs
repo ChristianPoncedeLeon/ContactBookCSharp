@@ -43,6 +43,7 @@ EXIT
 };
 
 private List<Contact> allContacts;
+private List<Contact> filteredContacts;
 private int page;
 private int size;
 private bool _shouldExit = false;
@@ -52,6 +53,7 @@ private bool isExit;
 public ContactBook(List<Contact> contacts = null)
     {
         allContacts = (contacts == null) ? new List<Contact>(): contacts;
+        filteredContacts = allContacts;
         page = 1;
         size = 10;
         isExit = false;
@@ -91,22 +93,22 @@ public void Start()
 
     private void ShowContacts()
     {
-        ShowContacts(allContacts, page, size);
+        ShowContacts(filteredContacts, page, size);
     }
     private void ShowContacts(List<Contact> contacts, int page, int size)
     {
-        if(allContacts.Count <= 0){ 
+        if(filteredContacts.Count <= 0){ 
 
         Console.WriteLine("No contacts found.");
     }
         else
         {
 
-            int indexCol = Math.Max("#".Length, allContacts.Count.ToString().Length);
-            int fnameCol = Math.Max("First Name".Length, allContacts.Max(c => c.getFname()?.Length ?? 0));
-            int lnameCol = Math.Max("Last Name".Length, allContacts.Max(c => c.getLname()?.Length ?? 0));
-            int phoneCol = Math.Max("Phone".Length, allContacts.Max(c => c.getPhone()?.Length ?? 0));
-            int emailCol = Math.Max("Email".Length, allContacts.Max(c => c.getEmail()?.Length ?? 0));
+            int indexCol = Math.Max("#".Length, filteredContacts.Count.ToString().Length);
+            int fnameCol = Math.Max("First Name".Length, filteredContacts.Max(c => c.getFname()?.Length ?? 0));
+            int lnameCol = Math.Max("Last Name".Length, filteredContacts.Max(c => c.getLname()?.Length ?? 0));
+            int phoneCol = Math.Max("Phone".Length, filteredContacts.Max(c => c.getPhone()?.Length ?? 0));
+            int emailCol = Math.Max("Email".Length, filteredContacts.Max(c => c.getEmail()?.Length ?? 0));
 
                 Console.WriteLine(" "
                 + "{0, "+ -indexCol +"} " 
@@ -124,7 +126,7 @@ public void Start()
             int e =Math.Clamp(s + size, 0, n);
             for (int i = s; i < e; i++){
                 
-                Contact c = allContacts[i];
+                Contact c = filteredContacts[i];
                 Console.WriteLine(" "
                 + "{0, "+ -indexCol +"} " 
                 + "{1, "+ -fnameCol +"} "
@@ -212,7 +214,7 @@ public void Start()
 
     private void NextPage()
     {
-        NextPage(allContacts,ref page, size);
+        NextPage(filteredContacts,ref page, size);
         
     }
 
@@ -223,7 +225,7 @@ public void Start()
 
    private void PrevPage()
     {
-        PrevPage(allContacts,ref page, size);
+        PrevPage(filteredContacts,ref page, size);
     }
     private void PrevPage(List<Contact> contacts,ref int page, int size)
     {
@@ -231,7 +233,7 @@ public void Start()
     }
     
     private void GotoPage(){
-    GotoPage (allContacts, ref page, size);
+    GotoPage (filteredContacts, ref page, size);
     }
     private void GotoPage(List<Contact> contacts, ref int page, int size)
     {
@@ -270,8 +272,8 @@ public void Start()
        if(Confirm("Do you want to create this contact?", YES))
         {
             Contact c = new Contact(fname, lname, phone, email);
-            allContacts.Add(c);
-            page = PageCount(allContacts, size);
+            filteredContacts.Add(c);
+            page = PageCount(filteredContacts, size);
 
             Console.WriteLine("Operation successfull: Contact created");
         }
@@ -286,7 +288,7 @@ public void Start()
 
     private void ReviewContact(){ 
  
-    int index = GetInt("Enter index", 1, allContacts.Count) - 1;
+    int index = GetInt("Enter index", 1, filteredContacts.Count) - 1;
 
     Console.Clear();
 
@@ -301,7 +303,7 @@ public void Start()
     }
     private void ReviewContact(int index)
     {
-        Contact c = allContacts[index];
+        Contact c = filteredContacts[index];
     
        Console.WriteLine($"First Name: {c.getFname()}");
        Console.WriteLine($" Last Name: {c.getLname()}");
@@ -313,7 +315,7 @@ public void Start()
 
     private void UpdateContact(){ 
  
-    int index = GetInt("Enter index", 1, allContacts.Count) - 1;
+    int index = GetInt("Enter index", 1, filteredContacts.Count) - 1;
 
     Console.Clear();
 
@@ -328,7 +330,7 @@ public void Start()
     }
     private void UpdateContact(int index)
     {
-        Contact c = allContacts[index];
+        Contact c = filteredContacts[index];
 
         
 
@@ -386,7 +388,7 @@ public void Start()
 
     private void DeleteContact()
     {
-        int index = GetInt("Enter index", 1, allContacts.Count) - 1;
+        int index = GetInt("Enter index", 1, filteredContacts.Count) - 1;
 
     Console.Clear();
 
@@ -403,15 +405,16 @@ public void Start()
     
     private void DeleteContact(int index)
     {
-        Contact c = allContacts[index];
+        Contact c = filteredContacts[index];
 
         
         ReviewContact(index);
+        
         Console.WriteLine();
 
         if(Confirm("Do you want to delete this contact?", NO))
         {
-            allContacts.Remove(c);
+            filteredContacts.Remove(c);
 
             Console.WriteLine("Operation successfull: Contact deleted");
         }
@@ -425,7 +428,23 @@ public void Start()
 
     private void FindContact()
     {
-        Console.WriteLine("Find Contact");
+        Console.Write("Enter search term (Clear): ");
+        string searchTerm = Console.ReadLine()!.ToLower();
+Console.WriteLine();
+
+        if(Confirm("Do you want to search contacts?", YES))
+        {
+           filteredContacts = allContacts.FindAll(c => (c.getFname()+c.getLname()+ c.getPhone()+c.getEmail()).ToLower().Contains(searchTerm));
+            page = 1;
+
+            Console.WriteLine("Operation successfull: Contacts searched");
+        }
+        else{
+            
+            Console.WriteLine("Operation cancelled: Contacts not searched");
+        
+        }
+        PressEnterContinue();
     }
 
     private void OrderContact()
