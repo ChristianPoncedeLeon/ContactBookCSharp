@@ -97,18 +97,18 @@ public void Start()
     }
     private void ShowContacts(List<Contact> contacts, int page, int size)
     {
-        if(filteredContacts.Count <= 0){ 
+        if(contacts.Count <= 0){
 
         Console.WriteLine("No contacts found.");
     }
         else
         {
 
-            int indexCol = Math.Max("#".Length, filteredContacts.Count.ToString().Length);
-            int fnameCol = Math.Max("First Name".Length, filteredContacts.Max(c => c.getFname()?.Length ?? 0));
-            int lnameCol = Math.Max("Last Name".Length, filteredContacts.Max(c => c.getLname()?.Length ?? 0));
-            int phoneCol = Math.Max("Phone".Length, filteredContacts.Max(c => c.getPhone()?.Length ?? 0));
-            int emailCol = Math.Max("Email".Length, filteredContacts.Max(c => c.getEmail()?.Length ?? 0));
+            int indexCol = Math.Max("#".Length, contacts.Count.ToString().Length);
+            int fnameCol = Math.Max("First Name".Length, contacts.Max(c => c.getFname()?.Length ?? 0));
+            int lnameCol = Math.Max("Last Name".Length, contacts.Max(c => c.getLname()?.Length ?? 0));
+            int phoneCol = Math.Max("Phone".Length, contacts.Max(c => c.getPhone()?.Length ?? 0));
+            int emailCol = Math.Max("Email".Length, contacts.Max(c => c.getEmail()?.Length ?? 0));
 
                 Console.WriteLine(" "
                 + "{0, "+ -indexCol +"} " 
@@ -125,8 +125,8 @@ public void Start()
             int s =Math.Clamp((page - 1) *size,0,n);
             int e =Math.Clamp(s + size, 0, n);
             for (int i = s; i < e; i++){
-                
-                Contact c = filteredContacts[i];
+
+                Contact c = contacts[i];
                 Console.WriteLine(" "
                 + "{0, "+ -indexCol +"} " 
                 + "{1, "+ -fnameCol +"} "
@@ -463,7 +463,21 @@ Console.WriteLine();
 
     private void DeduplicateContact()
     {
-      Console.WriteLine("Deduplicate Contact");
+      Dictionary<int, List<int>> duplicateGroups = ContactMerger.FindDuplicates(allContacts);
+
+      foreach (var indexes in duplicateGroups.Values)
+        {
+          List<Contact> contacts = indexes.ConvertAll(i => allContacts[i]);
+
+            if (contacts.Count > 1)
+            {
+                
+          Console.Clear();
+          ShowContacts(contacts, 1, contacts.Count);
+          PressEnterContinue();
+            }
+        }
+    PressEnterContinue();
     }
 
     private void Exit()
